@@ -31,7 +31,7 @@ import {
   VolumeX,
   Zap,
 } from 'lucide-react';
-import { Link, Route, Switch, useLocation } from 'wouter';
+import { Link, useLocation } from '@tanstack/react-router';
 import { downloadSourceZip } from '@/lib/download-source.functions';
 
 type GameId = 'wheel' | 'slots' | 'memory' | 'hearts';
@@ -234,7 +234,7 @@ const TOGETHER_SINCE = new Date(2025, 10, 28); // 28 Nov 2025
 const TRACK_SECONDS = 268; // 4:28
 
 function Shell({ children, tickets, musicOn, toggleMusic }: { children: ReactNode; tickets: number; musicOn: boolean; toggleMusic: () => void }) {
-  const [location] = useLocation();
+  const location = useLocation({ select: (s) => s.pathname });
   const now = useNow();
   const [playElapsed, setPlayElapsed] = useState(0);
   useEffect(() => {
@@ -261,13 +261,13 @@ function Shell({ children, tickets, musicOn, toggleMusic }: { children: ReactNod
     <div className="arcade-app">
       <div className="dashboard-shell">
         <aside className="side-rail">
-          <Link href="/" className="profile-mark" data-testid="link-home-brand" aria-label="Birthday Arcade home">
+          <Link to="/" className="profile-mark" data-testid="link-home-brand" aria-label="Birthday Arcade home">
             <span className="profile-orb"><Heart size={15} fill="currentColor" /></span>
             <span className="profile-copy"><strong>LEVEL 02</strong><b>HER-BIRTHDAY</b></span>
           </Link>
           <nav className="side-nav" aria-label="Main navigation">
             {links.map(({ href, label, icon: Icon }) => (
-              <Link key={href} href={href} className={`side-nav-link ${location === href ? 'active' : ''}`} data-testid={`link-nav-${label.toLowerCase().replace(' ', '-')}`} aria-current={location === href ? 'page' : undefined}>
+              <Link key={href} to={href} className={`side-nav-link ${location === href ? 'active' : ''}`} data-testid={`link-nav-${label.toLowerCase().replace(' ', '-')}`} aria-current={location === href ? 'page' : undefined}>
                 <Icon size={14} /> <span>{label}</span>
                 {label === 'Letters' && <LockKeyhole size={10} className="side-nav-lock" />}
               </Link>
@@ -376,7 +376,7 @@ function Home({ tickets, musicOn, toggleMusic }: { tickets: number; musicOn: boo
       <section className="home-tile home-stat home-stat-tickets" data-testid="text-ticket-count-home" aria-label={`${tickets.toLocaleString()} tickets`}>
         <span className="home-stat-label">Tickets</span>
         <div className="home-stat-value"><i className="home-pulse" /><strong>{tickets.toString().padStart(3, '0')}</strong></div>
-        <Link href="/vault" className="home-stat-link">Open vault <ChevronRight size={11} /></Link>
+        <Link to="/vault" className="home-stat-link">Open vault <ChevronRight size={11} /></Link>
       </section>
 
       <section className="home-tile home-stat home-stat-days">
@@ -423,7 +423,7 @@ function Home({ tickets, musicOn, toggleMusic }: { tickets: number; musicOn: boo
 
       <section className="home-quick">
         {quickTiles.map(({ href, label, blurb, icon: Icon, tone, testId }) => (
-          <Link key={href} href={href} className={`home-tile home-quick-tile home-tone-${tone}`} data-testid={testId}>
+          <Link key={href} to={href} className={`home-tile home-quick-tile home-tone-${tone}`} data-testid={testId}>
             <span className="home-quick-icon"><Icon size={18} /></span>
             <strong>{label}</strong>
             <p>{blurb}</p>
@@ -437,7 +437,7 @@ function Home({ tickets, musicOn, toggleMusic }: { tickets: number; musicOn: boo
           <strong>Made for you, <em>always.</em></strong>
           <p>Four small games, a letter, and a little room for the memories still to come.</p>
         </div>
-        <Link href="/arcade" className="dashboard-cta" data-testid="link-enter-arcade">Enter the arcade <ArrowRight size={13} /></Link>
+        <Link to="/arcade" className="dashboard-cta" data-testid="link-enter-arcade">Enter the arcade <ArrowRight size={13} /></Link>
       </section>
       {galleryOpen && (
         <div className="memory-gallery-overlay" role="dialog" aria-modal="true" aria-labelledby="memory-gallery-title">
@@ -746,7 +746,7 @@ function Arcade({ tickets, addTickets, spendTickets }: { tickets: number; addTic
             )}
           </div>
         </section>
-        <aside className="score-panel"><div className="eyebrow" style={{ color: '#efb3c8' }}>your scorecard</div><h3>A very good<br />time so far.</h3><div className="score-number">+ {tickets} tickets</div><p>There is no scoreboard here, only proof that you showed up and played along.</p><div className="score-rule" /><div className="score-line"><span>games available</span><strong>04</strong></div><div className="score-line mt-4"><span>pairs to find</span><strong>06</strong></div><div className="score-line mt-4"><span>hearts in the air</span><strong>07</strong></div><Link href="/vault" className="ghost-button mt-8 w-full" data-testid="link-score-vault">visit the vault <ArrowRight size={14} /></Link></aside>
+        <aside className="score-panel"><div className="eyebrow" style={{ color: '#efb3c8' }}>your scorecard</div><h3>A very good<br />time so far.</h3><div className="score-number">+ {tickets} tickets</div><p>There is no scoreboard here, only proof that you showed up and played along.</p><div className="score-rule" /><div className="score-line"><span>games available</span><strong>04</strong></div><div className="score-line mt-4"><span>pairs to find</span><strong>06</strong></div><div className="score-line mt-4"><span>hearts in the air</span><strong>07</strong></div><Link to="/vault" className="ghost-button mt-8 w-full" data-testid="link-score-vault">visit the vault <ArrowRight size={14} /></Link></aside>
       </div>
     </>
   );
@@ -766,7 +766,7 @@ function Vault({ tickets, unlocked, unlockReward, addTickets }: { tickets: numbe
           </article>;
         })}
       </div>
-      <div className="home-cta" style={{ marginTop: 30 }}><div className="eyebrow">still curious?</div><h2 className="section-heading">There is a letter<br /><em>with your name on it.</em></h2><Link className="ghost-button" href="/letter" data-testid="link-vault-letter">open the envelope <Mail size={14} /></Link></div>
+      <div className="home-cta" style={{ marginTop: 30 }}><div className="eyebrow">still curious?</div><h2 className="section-heading">There is a letter<br /><em>with your name on it.</em></h2><Link className="ghost-button" to="/letter" data-testid="link-vault-letter">open the envelope <Mail size={14} /></Link></div>
       <button className="text-button mt-8 mx-auto block" onClick={() => addTickets(0, 'Tickets are earned in the arcade, sweet thing.')} data-testid="button-vault-reminder"><Clock3 size={13} /> how do tickets work?</button>
     </>
   );
@@ -805,7 +805,7 @@ function Letter() {
           {!open && <div className="letter-veil"><LockKeyhole size={18} /><span>the letter waits inside</span></div>}
         </section>
       </div>
-      <div className="text-center mt-8"><Link className="text-button" href="/" data-testid="link-letter-home"><HomeIcon size={13} /> back to the beginning</Link></div>
+      <div className="text-center mt-8"><Link className="text-button" to="/" data-testid="link-letter-home"><HomeIcon size={13} /> back to the beginning</Link></div>
     </div>
   );
 }
@@ -914,13 +914,13 @@ function SettingsPage({ musicOn, toggleMusic }: { musicOn: boolean; toggleMusic:
           <span className="settings-badge">© 2026</span>
         </article>
       </div>
-      <div className="text-center mt-8"><Link className="text-button" href="/" data-testid="link-settings-home"><HomeIcon size={13} /> back to the beginning</Link></div>
+      <div className="text-center mt-8"><Link className="text-button" to="/" data-testid="link-settings-home"><HomeIcon size={13} /> back to the beginning</Link></div>
     </div>
   );
 }
 
 function RoutedErrorBoundary({ children }: { children: ReactNode }) {
-  const [location] = useLocation();
+  const location = useLocation({ select: (s) => s.pathname });
   return <ErrorBoundary resetKey={location}>{children}</ErrorBoundary>;
 }
 
