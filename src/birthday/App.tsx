@@ -925,6 +925,7 @@ function RoutedErrorBoundary({ children }: { children: ReactNode }) {
 }
 
 function Router() {
+  const pathname = useLocation({ select: (s) => s.pathname });
   const [tickets, setTickets] = usePersistentState('birthday-arcade-tickets', 0);
   const [unlocked, setUnlocked] = usePersistentState<RewardId[]>('birthday-arcade-unlocked', []);
   const [musicOn, toggleMusic] = useArcadeMusic();
