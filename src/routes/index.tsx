@@ -1,24 +1,23 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { BirthdayApp } from "@/birthday/App";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
-  component: Index,
+  head: () => ({
+    meta: [
+      { title: "Birthday Arcade — For Adel, Level 02" },
+      {
+        name: "description",
+        content:
+          "A tiny birthday arcade made for Adel: four little games, a vault of rewards, and a letter with her name on it.",
+      },
+      { property: "og:title", content: "Birthday Arcade — For Adel, Level 02" },
+      {
+        property: "og:description",
+        content: "Four small games, a letter, and a little room for the memories still to come.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
+  }),
+  component: BirthdayApp,
 });
-
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
-  return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
-  );
-}
