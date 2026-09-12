@@ -1,5 +1,8 @@
 // @ts-nocheck
 import './arcade.css';
+import memoryFirstDay from '@/assets/memory-first-day.jpg';
+import memoryFirstRain from '@/assets/memory-first-rain.jpg';
+import memoryTicketDay from '@/assets/memory-ticket-day.jpg';
 import { type CSSProperties, type ReactNode, useEffect, useRef, useState } from 'react';
 import { ErrorBoundary } from '@/components/error-boundary';
 import NotFound from '@/pages/not-found';
@@ -350,95 +353,85 @@ function Home({ tickets, musicOn, toggleMusic }: { tickets: number; musicOn: boo
     }
     if (additions.length) setMemories(previous => [...previous, ...additions]);
   };
-  const quickTiles = [
-    { href: '/arcade', label: 'Arcade', blurb: 'Four little games, infinite tickets to win.', icon: Gamepad2, tone: 'pink', testId: 'quick-access-music' },
-    { href: '/letter', label: 'Letter', blurb: 'A note that has been waiting all year.', icon: Mail, tone: 'lilac', testId: 'quick-access-letters' },
-    { href: '/vault', label: 'Vault', blurb: 'Spend tickets on real-life rewards.', icon: Gem, tone: 'yellow', testId: 'quick-access-for-you' },
-    { href: '/settings', label: 'Settings', blurb: 'Tune the arcade to feel like home.', icon: Settings2, tone: 'mint', testId: 'quick-access-gallery' },
+  const destinations = [
+    { href: '/arcade', label: 'Arcade', icon: Gamepad2, testId: 'quick-access-music' },
+    { href: '/letter', label: 'Letter', icon: Mail, testId: 'quick-access-letters' },
+    { href: '/vault', label: 'Vault', icon: Gem, testId: 'quick-access-for-you' },
+    { href: '/settings', label: 'Settings', icon: Settings2, testId: 'quick-access-gallery' },
   ];
+  const defaultMemories = [memoryFirstDay, memoryFirstRain, memoryTicketDay];
+  const photos = memories.length
+    ? memories.slice(-3).map(memory => memory.src)
+    : defaultMemories;
   return (
-    <div className="home-bento reveal">
-      <section className="home-tile home-hero">
-        <div className="hero-night-sky" aria-hidden="true"><i /><i /><i /><i /><i /><i /><i /></div>
-        <Heart className="home-hero-heart" size={180} fill="currentColor" aria-hidden="true" />
-        <div className="home-hero-copy">
-          <span className="home-kicker">Welcome back · Player 01</span>
-          <h1>My Favorite Human</h1>
-          <p>"This is not just a website. This is where our memories live."</p>
-          <div className="home-hero-mood">
-            <span>TODAY'S MOOD</span>
-            <strong><Heart size={13} fill="currentColor" /> 100%</strong>
-            <small>Thank you for being here ☕</small>
+    <div className="home2 reveal">
+      <section className="home2-hero">
+        <div className="home2-hero-glow" aria-hidden="true" />
+        <span className="home2-days-badge"><i />{togetherDays} days together</span>
+        <div className="home2-hero-copy">
+          <span className="home2-kicker">Welcome back · Player 01</span>
+          <h1>My Favorite<br /><em>Human.</em></h1>
+          <div className="home2-hero-foot">
+            <p>"This is not just a website. This is where our memories live."</p>
+            <span className="home2-mood"><Heart size={11} fill="currentColor" /> today's mood · 100%</span>
           </div>
         </div>
       </section>
 
-      <section className="home-tile home-stat home-stat-tickets" data-testid="text-ticket-count-home" aria-label={`${tickets.toLocaleString()} tickets`}>
-        <span className="home-stat-label">Tickets</span>
-        <div className="home-stat-value"><i className="home-pulse" /><strong>{tickets.toString().padStart(3, '0')}</strong></div>
-        <Link to="/vault" className="home-stat-link">Open vault <ChevronRight size={11} /></Link>
-      </section>
-
-      <section className="home-tile home-stat home-stat-days">
-        <span className="home-stat-label">Days together</span>
-        <div className="home-stat-value"><strong>{togetherDays}</strong></div>
-        <small className="home-stat-sub">since 28. 11. 2025 ✦</small>
-      </section>
-
-      <section className={`home-tile home-music ${musicOn ? 'is-playing' : ''}`}>
-        <div className={`mini-player-disc ${musicOn ? 'is-spinning' : ''}`}><Music2 size={20} /></div>
-        <div className="home-music-copy">
-          <strong>{musicOn ? 'soft lights / level 02' : 'No track playing'}</strong>
-          <span>{musicOn ? 'Now playing' : 'Press play for a little atmosphere'}</span>
+      <section className="home2-tickets" data-testid="text-ticket-count-home" aria-label={`${tickets.toLocaleString()} tickets`}>
+        <div>
+          <span className="home2-label">Arcade balance</span>
+          <div className="home2-tickets-value"><strong>{tickets.toLocaleString()}</strong><span>tickets</span></div>
         </div>
-        <button type="button" className="home-music-play" onClick={toggleMusic} aria-label={musicOn ? 'Pause music' : 'Play music'} data-testid="button-toggle-music-home">
-          {musicOn ? <Volume2 size={14} /> : <Play size={13} fill="currentColor" />}
-        </button>
+        <Link to="/vault" className="home2-tickets-icon" aria-label="Open the vault"><Ticket size={20} /></Link>
       </section>
 
-      <section className="home-tile home-memories">
-        <div className="dashboard-panel-heading">
-          <h2><ImagePlus size={13} /> Memory Vault</h2>
-          <button type="button" onClick={() => setGalleryOpen(true)} data-testid="button-view-memory-gallery">View Gallery <ArrowRight size={12} /></button>
-        </div>
-        <div className="home-memory-row" aria-label="Memory polaroid gallery">
-          {memories.length === 0 && [0, 1, 2].map(index => (
-            <div className={`empty-polaroid empty-polaroid-${index + 1}`} key={index}>
-              <div><ImagePlus size={17} /></div>
-            </div>
-          ))}
-          {memories.slice(-3).map((memory, index) => (
-            <div className={`empty-polaroid filled-polaroid empty-polaroid-${index + 1}`} key={memory.id}>
-              <img src={memory.src} alt={`Memory ${index + 1}`} />
-            </div>
-          ))}
-          <button type="button" className="home-memory-add" onClick={() => fileInput.current?.click()} data-testid="button-add-memory">
-            <ImagePlus size={18} />
-            <span>NEW PHOTO</span>
-            <small><b>{memories.length}</b> saved</small>
+      <section className={`home2-music ${musicOn ? 'is-playing' : ''}`}>
+        <div className="home2-music-top">
+          <div className={`mini-player-disc ${musicOn ? 'is-spinning' : ''}`}><Music2 size={18} /></div>
+          <div className="home2-music-copy">
+            <strong>{musicOn ? 'soft lights / level 02' : 'No track playing'}</strong>
+            <span>{musicOn ? 'Now playing' : 'A little atmosphere, on tap'}</span>
+          </div>
+          <button type="button" className="home2-music-play" onClick={toggleMusic} aria-label={musicOn ? 'Pause music' : 'Play music'} data-testid="button-toggle-music-home">
+            {musicOn ? <Volume2 size={13} /> : <Play size={12} fill="currentColor" />}
           </button>
+        </div>
+        <div className="home2-music-bar"><i style={{ width: musicOn ? '62%' : '4%' }} /></div>
+        <div className="home2-music-meta"><span>{musicOn ? '01:24' : '0:00'}</span><Heart size={13} fill="currentColor" /><span>4:28</span></div>
+      </section>
+
+      <nav className="home2-nav" aria-label="Arcade destinations">
+        {destinations.map(({ href, label, icon: Icon, testId }) => (
+          <Link key={href} to={href} className="home2-nav-tile" data-testid={testId}>
+            <span className="home2-nav-icon"><Icon size={19} /></span>
+            <span className="home2-nav-label">{label}</span>
+          </Link>
+        ))}
+      </nav>
+
+      <section className="home2-memories">
+        <div className="home2-memories-head">
+          <span className="home2-label">Memory vault</span>
+          <span className="home2-memories-actions">
+            <button type="button" onClick={() => fileInput.current?.click()} aria-label="Add a photo" data-testid="button-add-memory"><ImagePlus size={12} /></button>
+            <button type="button" onClick={() => setGalleryOpen(true)} aria-label="View memory gallery" data-testid="button-view-memory-gallery"><ArrowRight size={12} /></button>
+          </span>
+        </div>
+        <div className="home2-memories-stack" aria-label="Memory photos">
+          {photos.map((src, index) => (
+            <button type="button" className="home2-memory" key={index} onClick={() => setGalleryOpen(true)}>
+              <img src={src} alt={`Memory ${index + 1}`} />
+            </button>
+          ))}
         </div>
         <input ref={fileInput} type="file" accept="image/*" multiple hidden onChange={event => { void addMemoryFiles(event.target.files); event.target.value = ''; }} />
       </section>
 
-      <section className="home-quick">
-        {quickTiles.map(({ href, label, blurb, icon: Icon, tone, testId }) => (
-          <Link key={href} to={href} className={`home-tile home-quick-tile home-tone-${tone}`} data-testid={testId}>
-            <span className="home-quick-icon"><Icon size={18} /></span>
-            <strong>{label}</strong>
-            <p>{blurb}</p>
-          </Link>
-        ))}
-      </section>
-
-      <section className="home-tile home-banner">
-        <div className="home-banner-copy">
-          <span>LEVEL 02 : HER-BIRTHDAY</span>
-          <strong>Made for you, <em>always.</em></strong>
-          <p>Four small games, a letter, and a little room for the memories still to come.</p>
-        </div>
-        <Link to="/arcade" className="dashboard-cta" data-testid="link-enter-arcade">Enter the arcade <ArrowRight size={13} /></Link>
-      </section>
+      <Link to="/arcade" className="home2-cta" data-testid="link-enter-arcade">
+        <span className="home2-cta-copy">Ready for a round of birthday games?<small>Four little machines are warmed up and waiting.</small></span>
+        <span className="home2-cta-action">Start playing <ArrowRight size={16} /></span>
+      </Link>
       {galleryOpen && (
         <div className="memory-gallery-overlay" role="dialog" aria-modal="true" aria-labelledby="memory-gallery-title">
           <div className="memory-gallery-dialog">
