@@ -948,14 +948,19 @@ function Router() {
   return (
     <RoutedErrorBoundary>
        <Shell tickets={tickets} musicOn={musicOn} toggleMusic={toggleMusic}>
-        <Switch>
-          <Route path="/"><Home tickets={tickets} musicOn={musicOn} toggleMusic={toggleMusic} /></Route>
-          <Route path="/arcade"><Arcade tickets={tickets} addTickets={addTickets} spendTickets={spendTickets} /></Route>
-          <Route path="/vault"><Vault tickets={tickets} unlocked={unlocked} unlockReward={unlockReward} addTickets={addTickets} /></Route>
-          <Route path="/letter" component={Letter} />
-          <Route path="/settings"><SettingsPage musicOn={musicOn} toggleMusic={toggleMusic} /></Route>
-          <Route component={NotFound} />
-        </Switch>
+        {pathname === '/' ? (
+          <Home tickets={tickets} musicOn={musicOn} toggleMusic={toggleMusic} />
+        ) : pathname === '/arcade' ? (
+          <Arcade tickets={tickets} addTickets={addTickets} spendTickets={spendTickets} />
+        ) : pathname === '/vault' ? (
+          <Vault tickets={tickets} unlocked={unlocked} unlockReward={unlockReward} addTickets={addTickets} />
+        ) : pathname === '/letter' ? (
+          <Letter />
+        ) : pathname === '/settings' ? (
+          <SettingsPage musicOn={musicOn} toggleMusic={toggleMusic} />
+        ) : (
+          <NotFound />
+        )}
       </Shell>
       {toast && <div className="toast-note" role="status" data-testid="status-toast"><Sparkles size={14} className="inline mr-2" />{toast}</div>}
     </RoutedErrorBoundary>
